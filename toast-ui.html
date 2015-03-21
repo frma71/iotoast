@@ -6,9 +6,6 @@
     body { background-color: #444444; }
     .container {height: 100%; width:100%; font-size: 0; background-color: white; padding:30px;}
     .left, .middle, .right {display: inline-block; *display: inline; zoom: 1; vertical-align: top; font-size: 12px;}
-    .left {width: 50%;}
-    .middle {width: 50%;}
-    .right {width: 50%;}
     .unselectable { 
 	user-drag: none; 
 	user-select: none; 
@@ -76,18 +73,26 @@
      function setStatus(status) {
 	document.getElementById("status").innerHTML = status
      }
+     function startToast() {
+	console.log("Start toasting")
+     }
  </script>
 
  <body onload="_loaded()">
    <div class="container" style="width:800px;margin: 0px auto;">
-     <div class="left">
+     <div class="left" style="width:50%">
        <p class="unselectable" style="text-align:center; font-size:3em;font-weight:bold">Target</p>
        <p style="text-align:center">
 	 <img class="unselectable" id="target_toast" src="toastt.png"></img><br>
        </p>
-       <input style="width:400px;margin=2em;" oninput="setTarget(value,false)" type="range" min="-128" max="255" value="0" onchange="setTarget(value, true)"></input>
+       <div class="container">
+	 <div class="left" style="width:60%" >
+	   <input style="margin=2em;width:90%;" oninput="setTarget(value,false)" type="range" min="-128" max="255" value="0" onchange="setTarget(value, true)"></input>
+	 </div>
+	 <div class="right" style="width:5em" onclick="startToast()"><button>Toast</button></div>
+       </div>
     </div>
-     <div class="right">
+     <div class="right" style="width:50%">
        <p class="unselectable" style="text-align:center; font-size:3em;font-weight:bold">Actual</p>
        <p style="text-align:center">
 	 <img class="unselectable" id="actual_toast" src="toastt.png"></img><br>
