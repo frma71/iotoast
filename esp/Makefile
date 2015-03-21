@@ -1,6 +1,6 @@
 BAUD	?= 9600
 PORT	?= /dev/ttyUSB0
-FILES = svcweb.lua index.html init.lua config.html
+FILES = svc.lua svcweb.lua index.html init.lua config.html
 
 
 
