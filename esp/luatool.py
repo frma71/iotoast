@@ -54,7 +54,7 @@ def writeln(data, check = 1):
                        sys.stdout.write("\r\n expected echo  : '%s'" % data)
                        sys.stdout.write("\r\n but got answer : '%s'" % line)
                        sys.stdout.write("\r\n\r\n")
-                       raise Exception('Error sending data to MCU\r\n\r\n')
+#                       raise Exception('Error sending data to MCU\r\n\r\n')
                  line = ''
            else :
               line += char
