@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>IOToast</title>
+  <style type="text/css">
+    body { background-color: #444444; }
+    .container {height: 100%; width:100%; font-size: 0; background-color: white; padding:30px;}
+    .left, .middle, .right {display: inline-block; *display: inline; zoom: 1; vertical-align: top; font-size: 12px;}
+    .left {width: 50%;}
+    .middle {width: 50%;}
+    .right {width: 50%;}
+    .unselectable { 
+	user-drag: none; 
+	user-select: none; 
+	-webkit-user-select: none;
+	-webkit-user-drag: none;
+    }
+  </style>
+</head>
+<script>
+  function _loaded() {
+	target_toast = document.getElementById("target_toast");
+	target_canvas = document.createElement("canvas");
+	target_ctx = target_canvas.getContext("2d");
+	target_pixels = _getPixels(target_ctx, target_canvas, target_toast)
+
+	actual_toast = document.getElementById("actual_toast");
+	actual_canvas = document.createElement("canvas");
+	actual_ctx = actual_canvas.getContext("2d");
+	actual_pixels = _getPixels(actual_ctx, actual_canvas, actual_toast)
+
+	originalPixels = 
+		target_ctx.getImageData(0, 0, target_toast.width, target_toast.height);
+   }
+
+   function _getPixels(ctx, canvas,img)
+   {
+	canvas.width  = img.width;
+	canvas.height = img.height;
+
+	ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, img.width, img.height);
+	img.onload = null;
+
+	pixels = ctx.getImageData(0, 0, img.width, img.height);
+	return pixels
+   }
+   function _changeColor(ctx, pixels, img, canvas, b)
+   {
+	if(!originalPixels) return; // Check if image has loaded
+   
+	for(var i = 0, L = originalPixels.data.length; i < L; i += 4)
+	{
+		if(pixels.data[i + 3] > 0)
+		{
+			// TODO: Modify to make look good
+			pixels.data[i]     = originalPixels.data[i + 0] / 255 * b;
+			pixels.data[i + 1] = originalPixels.data[i + 1] / 255 * b;
+			pixels.data[i + 2] = originalPixels.data[i + 2] / 255 * b;
+		}
+	}
+	ctx.putImageData(pixels, 0, 0);
+	img.src = canvas.toDataURL("image/png");
+     }
+     function setTarget(value, final) {
+	if(typeof final === 'undefined') final = true
+	_changeColor(target_ctx, target_pixels, target_toast, target_canvas, 255 - value)
+	if(final) {
+		console.log("Send target color ", value, " to toaster")
+	}
+     }
+     function setActual(value) {
+	_changeColor(actual_ctx, actual_pixels, actual_toast, actual_canvas, 255 - value)
+	
+     }
+     // Set status text
+     function setStatus(status) {
+	document.getElementById("status").innerHTML = status
+     }
+ </script>
+
+ <body onload="_loaded()">
+   <div class="container" style="width:800px;margin: 0px auto;">
+     <div class="left">
+       <p class="unselectable" style="text-align:center; font-size:3em;font-weight:bold">Target</p>
+       <p style="text-align:center">
+	 <img class="unselectable" id="target_toast" src="toastt.png"></img><br>
+       </p>
+       <input style="width:400px;margin=2em;" oninput="setTarget(value,false)" type="range" min="-128" max="255" value="0" onchange="setTarget(value, true)"></input>
+    </div>
+     <div class="right">
+       <p class="unselectable" style="text-align:center; font-size:3em;font-weight:bold">Actual</p>
+       <p style="text-align:center">
+	 <img class="unselectable" id="actual_toast" src="toastt.png"></img><br>
+       </p>
+       <p  class="unselectable" id="status" style="color:red; text-align:center;font-size:3em; text-decoration: blink">Toasting</p>
+     </div>
+   </div>
+ </body>
+</html>
